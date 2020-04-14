@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员页面</title>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <script type="text/javascript" th:src="@{/assets/js/frame/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.15.5/dist/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/commonUse.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/admin/adminJS.js}"></script>
+</head>
+<body>
+    <nav class="navbar-default navbar-fixed-top" th:fragment="top">
+        <div class="navbar-header">
+            <a class="navbar-brand mystyle-brand" style="color: #FFF">
+                <span class="glyphicon glyphicon-home"></span>
+            </a>
+        </div>
+        <input type="hidden" th:value="${type}" id="type">
+        <input type="hidden" th:value="${grade}" id="grade">
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="li-border">
+                    <a class="mystyle-color" href="#" style="color: #FFF">管理控制台</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <li class="li-border">
+                    <a href="#" class="mystyle-color" style="color: #FFF">[[${name}]],您好</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li class="li-border">
+                    <a th:href="@{/user/exitLogin}" style="color: #FFF" class="mystyle-color"> 退出登录 </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="down-main" th:fragment="sideBar">
+        <div class="left-main left-full">
+            <div class="sidebar-fold">
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </div>
+            <div class="subNavBox">
+                <div class="sBox">
+                    <div class="subNav sublist-down">
+                        <span class="title-icon glyphicon glyphicon-chevron-down"></span>
+                        <span class="sublist-title" style="font-size:15px;">查询</span>
+                    </div>
+                    <ul class="navContent" style="display: block">
+                        <li>
+                            <div class="showtitle" style="width: 100px;">项目查询</div>
+                            <a th:href="@{/project/selectAll}" class="active3">
+                                <span class="sublist-icon glyphicon glyphicon-search"></span>
+                                <span class="sub-title">项目查询</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">论文查询</div>
+                            <a th:href="@{/paper/selectAll}" class="active3">
+                                <span class="sublist-icon glyphicon glyphicon-search"></span>
+                                <span class="sub-title">论文查询</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">荣誉查询</div>
+                            <a th:href="@{/honor/selectAll}" class="active3">
+                                <span class="sublist-icon glyphicon glyphicon-search"></span>
+                                <span class="sub-title">荣誉查询</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">专利查询</div>
+                            <a th:href="@{/patent/selectAll}" class="active3">
+                                <span class="sublist-icon glyphicon glyphicon-search"></span>
+                                <span class="sub-title">专利查询</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 130px;">其他成果查询</div>
+                            <a th:href="@{/other/selectAll}" class="active3">
+                                <span class="sublist-icon glyphicon glyphicon-search"></span>
+                                <span class="sub-title">其他成果查询</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sBox">
+                    <div class="subNav sublist-up">
+                        <span class="title-icon glyphicon glyphicon-chevron-up"></span><span
+                            class="sublist-title" style="font-size:15px;">统计</span>
+                    </div>
+                    <ul class="navContent" style="display: none">
+                        <li>
+                            <div class="showtitle" style="width: 100px;">项目统计</div> <a
+                                th:href="@{'/project/statistics?grade=' + ${grade}}"><span
+                                class="sublist-icon glyphicon  glyphicon-stats"></span><span
+                                class="sub-title">项目统计</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">论文统计</div> <a
+                                th:href="@{'/paper/statistics?grade=' + ${grade}}"><span
+                                class="sublist-icon glyphicon glyphicon-stats"></span><span
+                                class="sub-title">论文统计</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">荣誉统计</div> <a
+                                th:href="@{'/honor/statistics?grade=' + ${grade}}"><span
+                                class="sublist-icon glyphicon glyphicon-stats"></span><span
+                                class="sub-title">荣誉统计</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">专利统计</div> <a
+                                th:href="@{'/patent/statistics?grade=' + ${grade}}"><span
+                                class="sublist-icon glyphicon glyphicon-stats"></span><span
+                                class="sub-title">专利统计</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 130px;">其他成果统计</div> <a
+                                th:href="@{'/other/statistics?grade=' + ${grade}}"><span
+                                class="sublist-icon glyphicon glyphicon-stats"></span><span
+                                class="sub-title">其他成果统计</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sBox audit">
+                    <div class="subNav sublist-up">
+                        <span class="title-icon glyphicon glyphicon-chevron-up"></span><span
+                            class="sublist-title" style="font-size:15px;">审核</span>
+                    </div>
+                    <ul class="navContent" style="display: none">
+                        <li>
+                            <div class="showtitle" style="width: 100px;">项目审核</div> <a
+                                th:href="@{'/project/audit?cname=' + ${cname}}"                                onclick="ProjectAudit()" target="select_frame"><span
+                                class="sublist-icon glyphicon glyphicon-check"></span><span
+                                class="sub-title">项目审核</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">论文审核</div> <a
+                                th:href="@{'/paper/audit?cname=' + ${cname}}"                                onclick="PaperAudit()" target="select_frame"><span
+                                class="sublist-icon glyphicon glyphicon-check"></span><span
+                                class="sub-title">论文审核</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">荣誉审核</div> <a
+                                th:href="@{'/honor/audit?cname=' + ${cname}}"><span
+                                class="sublist-icon glyphicon glyphicon-check"></span><span
+                                class="sub-title">荣誉审核</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">专利审核</div> <a
+                                th:href="@{'/patent/audit?cname=' + ${cname}}"><span
+                                class="sublist-icon glyphicon glyphicon-check"></span><span
+                                class="sub-title">专利审核</span></a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 130px;">其他成果审核</div> <a
+                                th:href="@{'/other/audit?cname=' + ${cname}}"><span
+                                class="sublist-icon glyphicon glyphicon-check"></span><span
+                                class="sub-title">其他成果审核</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sBox otherAction">
+                    <div class="subNav sublist-up">
+                        <span class="title-icon glyphicon glyphicon-chevron-up"></span><span
+                            class="sublist-title" style="font-size:15px;">其他</span>
+                    </div>
+                    <ul class="navContent" style="display: none">
+                        <li>
+                            <div class="showtitle" style="width: 130px;">教师管理</div>
+                            <a th:href="@{/teacher/selectAll}" class="active3">
+                                <span class="sublist-icon glyphicon glyphicon-search"></span>
+                                <span class="sub-title">教师管理</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="showtitle" style="width: 100px;">密码管理</div> <a
+                                th:href="@{/user/password}"><span
+                                class="sublist-icon glyphicon  glyphicon-asterisk"></span><span
+                                class="sub-title">密码管理</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

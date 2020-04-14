@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>项目统计</title>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <script type="text/javascript" th:src="@{/assets/js/frame/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/echarts.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.15.5/dist/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/admin/adminJS.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/ajax/ajaxSelect.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/commonUse.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/statistics/statisticsProject.js}"></script>
+</head>
+<body>
+<div th:replace="admin/admin::top"></div>
+<div class="down-main">
+    <th:block th:include="admin/admin::sideBar" id="sideBar"></th:block>
+    <div class="right-product right-full select-main">
+        <div class="container-fluid col-md-12" style="margin-left: 2em">
+
+            <div class="row">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="navbar-header">
+                        <a href="#" class="navbar-brand">模糊搜索</a>
+                    </div>
+                    <div style="margin-left: 2em">
+                        <input type="hidden" th:value="${condition.cname}" id="codCname">
+                        <input type="hidden" th:value="${condition.dname}" id="codDname">
+                        <form role="search" class="navbar-form navbar-left">
+                            <!-- 查询下拉框及按要求进行查询  -->
+                            <select id="college" class="form-control" name="college" th:field="${condition.cname}"
+                                    onchange="goSelect('project');move()">
+                                <th:block th:if="${academy}">
+                                    <option th:value="${cname}" th:text="${cname}"></option>
+                                </th:block>
+                                <th:block  th:if="${school}">
+                                    <option value="">请选择所在学院</option>
+                                    <th:block th:each="c:${collegeList}">
+                                        <option th:value="${c}" th:text="${c}"></option>
+                                    </th:block>
+                                </th:block>
+                            </select>
+                            <select id="sdept" class="form-control" onchange="goSelect('project')">
+                                <option value="">请选择所在专业</option>
+                            </select>
+                            <div class="form-group">
+                                <input type="date" class="form-control" id="starttime" onchange="goSelect('project')" th:value="${condition.starttime}">
+                                <input type="date" class="form-control" id="endtime" onchange="goSelect('project')" th:value="${condition.endtime}">
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+            </div>
+
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="#">主页</a></li>
+            <li><a href="#">统计</a></li>
+            <li class="active">项目统计</li>
+        </ol>
+        <input id="json"  th:value="${json}" class="hide">
+        <input id="Pmoneyjson" th:value="${jsonMoney}" class="hide">
+        <input id="grade" th:value="${grade}" class="hide">
+        <input id="jsonList" th:value="${jsonList}" class="hide">
+        <input id="cname" th:value="${cname}" class="hide">
+        <div class="container-fluid col-md-12">
+                <div class="row">
+                    <div id="project_bar" class="col-md-5" style="height:400px"></div>
+                    <div id="project_pie" class="col-md-5 col-md-offset-1" style="height:400px"></div>
+                    <button id="showData1" class="btn btn-primary col-md-1" th:text="显示详细数据"></button>
+                </div>
+                <div id="tableDiv1" class="hide">
+                    <table class="table table-bordered col-md-10">
+                        <thead>
+                        <tr>
+                            <th>学院</th>
+                            <th>项目数</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="tr" th:each="rs:${json}">
+                            <td th:text="${rs.name}"></td>
+                            <td th:text="${rs.count}"></td>
+                        </tr>
+                        <tr>
+                            <td>总计</td>
+                            <td th:text="${amount}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <div class="container-fluid" style="margin-top: 50px">
+            <div class="row">
+                <div id="pmoney_bar" class="col-md-5" style="height:400px"></div>
+                <div id="pmoney_pie" class="col-md-5 col-md-offset-1" style="height:400px"></div>
+                <button id="showData2" class="btn btn-primary col-md-1" th:text="显示详细数据"></button>
+            </div>
+            <div id="tableDiv2" class="hide">
+                <table class="table table-bordered col-md-10">
+                    <thead>
+                    <tr>
+                        <th>学院</th>
+                        <th>经费总数（万元）</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="tr" th:each="rs:${jsonMoney}">
+                        <td th:text="${rs.name}"></td>
+                        <td th:text="${rs.money}"></td>
+                    </tr>
+                    <tr>
+                        <td>总计</td>
+                        <td th:text="${moneyAmount}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div id="project_broken_line" class="col-md-11" style="height:400px"></div>
+                <button id="showData3" class="btn btn-primary col-md-1" th:text="显示详细数据"></button>
+            </div>
+            <div id="tableDiv3" class="hide">
+                <table class="table table-bordered col-md-10">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th:block  th:if="${condition.cname} == 'null'">
+                                <th>人文学院</th>
+                                <th>健康学院</th>
+                                <th>化材学院</th>
+                                <th>建工学院</th>
+                                <th>数计学院</th>
+                                <th>生物学院</th>
+                                <th>电气学院</th>
+                                <th>经管学院</th>
+                                <th>艺术学院</th>
+                                <th>马院</th>
+                            </th:block>
+                            <th:block th:if="${condition.cname} != 'null'" th:each="dname:${dnameList}">
+                                <th th:text="${dname}"></th>
+                            </th:block>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tr" th:each="json:${jsonList}">
+                            <td><div></div></td>
+                            <td th:each="rs:${json}" th:text="${rs.count}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>详细信息</title>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/fileinput.css}">
+    <script type="text/javascript" th:src="@{/assets/js/frame/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/fileinput.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/zh.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.15.5/dist/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/commonUse.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/admin/adminJS.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/ajax/ajaxPaperData.js}"></script>
+</head>
+<body>
+<div th:replace="teacher/teacher::top"></div>
+<div class="down-main">
+    <th:block th:if="${grade} == 'null'">
+        <th:block th:include="teacher/teacher::sideBar" id="sideBar">
+        </th:block>
+    </th:block>
+    <th:block th:if="${grade} != 'null'">
+        <th:block th:include="admin/admin::sideBar" id="sideBar">
+        </th:block>
+    </th:block>
+    <div class="right-product right-full select-main" style="margin-left: -2em">
+        <div class="table-main col-md-12">
+            <div class="col-md-4">
+                <ol class="breadcrumb" style="margin-left:3em;margin-top:1em">
+                    <li><a href="#">主页</a></li>
+                    <li><a href="#">查询</a></li>
+                    <li><a href="#">论文查询</a></li>
+                    <li class="active">详细信息</li>
+                </ol>
+            </div>
+            <input type="hidden" th:value="${grade}" id="grade">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 ">
+                    <div class="col-md-10 button-div form-inline">
+                        <input type="file" id="file" style="display: none">
+                    </div>
+                    <table border="2" id="table" class="table table-striped table-bordered table-condensed">
+                        <tr class="info">
+                            <td>名称</td>
+                            <td class="Paname text-center" colspan="5">[[${paper.paname}]]</td>
+                        </tr>
+                        <tr>
+                            <td>检索号</td>
+                            <td class="Pasearchnum">[[${paper.pasearchnum}]]</td>
+                            <td>第一作者</td>
+                            <td class="Tname">[[${paper.tname}]]</td>
+                            <td>发表时间</td>
+                            <td class="Padate">[[${paper.padate}]]</td>
+                        </tr>
+                        <tr>
+                            <td>发表期刊</td>
+                            <td class="Papublish" colspan="2">[[${paper.papublish}]]</td>
+                            <td>期/卷/页</td>
+                            <td class="Pdisvol" colspan="2">[[${paper.pdisvol}]]</td>
+                        </tr>
+                        <tr>
+                            <td>级别</td>
+                            <td class="Pagrad">[[${paper.pagrad}]]</td>
+                            <td>通讯作者</td>
+                            <td class="corrAuthor">[[${paper.corrAuthor}]]</td>
+                            <td>附件</td>
+                            <td><a th:href="@{'/file/download?model=paper&majorkey=' + ${paper.pasearchnum} + '&name=' + ${paper.paname}}"  class="btn btn-primary Download">下载附件</a></td>
+                            <input type="hidden" id="accessoryPath" th:value="${paper.paccessory}"/>
+                        </tr>
+                        <tr>
+                            <td>审核情况</td>
+                            <td>[[${paper.paudit}]]</td>
+                            <td>审核意见</td>
+                            <td colspan="3">[[${paper.message}]]</td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td class="Patremarks" colspan="5">[[${paper.paremarks}]]</td>
+                        </tr>
+                    </table>
+                    <div id="teacher">
+                        <button class="btn btn-primary form-group" style="width:100%;margin-bottom:10px" id="btn_update">重新编辑</button>
+                        <!--重新编辑信息的模态框 -->
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" >
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel">重新编辑论文信息</h4>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="Pasearchnum">检索号</label>
+                                            <input type="text" name="Pasearchnum" th:value="${paper.pasearchnum}"
+                                                   class="form-control" id="Pasearchnum" placeholder="检索号" readonly>
+                                            <div id="Pasearchnumdiv" style="display:none">
+                                                <span id="Pasearchnumspan" ></span><br>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Paname">论文名</label>
+                                            <input type="text" name="Paname" th:value="${paper.paname}"
+                                                   class="form-control" id="Paname" placeholder="论文名">
+                                            <div id="Panamediv" style="display:none">
+                                                <span id="Panamespan" ></span><br>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tname">第一作者</label>
+                                            <input type="text"  th:value="${paper.tname}"
+                                                   name="tname" class="form-control" id="tname"
+                                                   placeholder="第一作者" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Papublish">发表期刊</label>
+                                            <input type="text"  th:value="${paper.papublish}"
+                                                   name="Papublish" class="form-control" id="Papublish"
+                                                   placeholder="发表期刊">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Pdisvol">期/卷/页</label>
+                                            <input type="text" name="Pdisvol" th:value="${paper.pdisvol}"
+                                                   class="form-control" id="Pdisvol" placeholder="期/卷/页">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Padate">发表时间</label>
+                                            <input type="date" name="Padate"  th:value="${paper.padate}"
+                                                   class="form-control" id="Padate" placeholder="发表时间">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Pagrad">类别</label>
+                                            <select name="Pagrad"  th:value="${paper.pagrad}" class="form-control" id="Pagrad">
+                                            <option value="T类">T类</option>
+                                            <option value="A类">A类</option>
+                                            <option value=B类>B类</option>
+                                            <option value="C类">C类</option>
+                                            <option value="D类">D类</option>
+                                            <option value="E类">E类</option>
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Paremarks">备注</label>
+                                            <input type="text" th:value="${paper.paremarks}"
+                                                   name="Paremarks" class="form-control" id="Paremarks"
+                                                   placeholder="备注">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭
+                                        </button>
+                                        <button type="submit" id="btn_submit"
+                                                class="btn btn-primary save">
+                                            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>提交
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="row form-group">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading" align="center">
+                                        <label style="text-align: center;font-size: 18px;">文 件 上 传</label>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="col-sm-12">
+                                            <input id="uploadfile" name="file" multiple type="file" data-show-caption="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

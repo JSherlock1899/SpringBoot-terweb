@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slxy.terweb.mapper.UserMapper">
+
+    <select id="adminLoginCheck" resultType="int" >
+        select count(*) from Admin where Aname=#{username} and Apsw=#{password}
+    </select>
+
+    <select id="teacherLoginCheck" resultType="int" >
+        select count(*) from Teacher where Tsn=#{username} and Tpsw=#{password}
+    </select>
+
+    <select id="getAdminGrade" resultType="Admin" >
+        select * from Admin where Aname=#{username}
+    </select>
+
+    <select id="getTeacherName" resultType="String" >
+        select Tname from Teacher where Tsn=#{Tsn}
+    </select>
+
+    <select id="verifyAdminPassword" resultType="String">
+        select Apsw from Admin where Aname = #{Aname}
+    </select>
+
+    <select id="verifyTeacherPassword" resultType="String">
+        select Tpsw from Teacher where Tsn = #{Tsn}
+    </select>
+
+    <update id="alterAdminPassword">
+        update Admin set Apsw = #{newPassword} where Aname = #{Aname}
+    </update>
+
+    <update id="alterTeacherPassword">
+        update Teacher set Tpsw = #{newPassword} where Tsn = #{Tsn}
+    </update>
+</mapper>

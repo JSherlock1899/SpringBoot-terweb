@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>详细信息</title>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/fileinput.css}">
+    <script type="text/javascript" th:src="@{/assets/js/frame/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/fileinput.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/frame/zh.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap-table/1.15.5/dist/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/commonUse.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/admin/adminJS.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/ajax/ajaxProjectData.js}"></script>
+</head>
+<body>
+<div th:replace="admin/admin::top"></div>
+<div class="down-main">
+    <th:block th:include="admin/admin::sideBar" id="sideBar">
+    </th:block>
+    <div class="right-product right-full select-main" style="margin-left: -2em">
+        <div class="table-main col-md-12">
+            <div class="col-md-4">
+                <ol class="breadcrumb" style="margin-left:3em;margin-top:1em">
+                    <li><a href="#">主页</a></li>
+                    <li><a href="#">审核</a></li>
+                    <li><a href="#">项目审核</a></li>
+                    <li class="active">详细信息</li>
+                </ol>
+            </div>
+            <input type="hidden" th:value="${grade}" id="grade">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <table style="table-layout:fixed;" border="2" id="table" class="table table-striped table-bordered table-condensed col-md-10">
+                        <tr class="info">
+                            <td>项目名称</td>
+                            <td class="Pname text-center" colspan="3">[[${project.pname}]]</td>
+                        </tr>
+                        <tr>
+                            <td>项目编号</td>
+                            <td class="Psn">[[${project.psn}]]</td>
+                            <td>负责人</td>
+                            <td class="Pleader">[[${project.tname}]]</td>
+                        </tr>
+                        <tr>
+                            <td>级别</td>
+                            <td class="Pgrad">[[${project.pgrad}]]</td>
+                            <td>类型</td>
+                            <td class="Pkind">[[${project.pkind}]]</td>
+                        </tr>
+                        <tr>
+                            <td>科研状态</td>
+                            <td class="Pcondition">[[${project.pcondition}]]</td>
+                            <td>成员</td>
+                            <td class="Pmember">[[${project.pmember}]]</td>
+                        </tr>
+                        <tr>
+                            <td>经费（万元）</td>
+                            <td class="Pmoney">[[${project.pmoney}]]</td>
+                            <td>立项时间</td>
+                            <td class="Pstatime">[[${project.pstatime}]]</td>
+                        </tr>
+                        <tr>
+                            <td>结题时间</td>
+                            <td class="Pendtime">[[${project.pendtime}]]</td>
+                            <td>附件</td>
+                            <td ><a th:href="@{'/file/download?model=project&majorkey=' + ${project.psn} + '&name=' + ${project.pname}}"  class="btn btn-primary Download" value="上传">下载附件</a></td>
+                            <input type="hidden" id="accessoryPath" th:value="${project.paccessory}"/>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td class="Patremarks" colspan="3">[[${project.premarks}]]</td>
+                        </tr>
+                        <tr>
+                            <td>审核意见</td>
+                            <td colspan="2"><input type="text" id="message" style="width:400px"></td>
+                            <td class=""><a id="pass" class="btn btn-success">通过</a>&nbsp<a id="nopass" class="btn btn-danger">不通过</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

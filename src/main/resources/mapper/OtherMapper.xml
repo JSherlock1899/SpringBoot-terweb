@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slxy.terweb.mapper.OtherMapper">
+
+    <select id="selectAll" resultType="Other" >
+        select otherName,otherDate,publisher,accessory,o.audit,o.message,otherType,otherDescribe,Tname,Cname,Dname FROM Other o JOIN Teacher t ON o.Tsn = t.Tsn JOIN College c on c.Csn = t.Csn JOIN  Sdept s ON s.Dsn = t.Dsn
+        <where>
+            <if test="tname!=null and tname!='' and tname!='null'">
+                Tname = #{tname}
+            </if>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                AND Cname = #{cname}
+            </if>
+            <if test="dname!=null and dname!='' and dname!='null' and dname!='请选择所在专业'">
+                AND Dname = #{dname}
+            </if>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                AND otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                AND otherDate &lt;= #{endtime}
+            </if>
+            <if test="cname!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="cname == null">
+                AND o.audit = '1'
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAllUnaudit" resultType="Other" >
+        select otherName,otherDate,publisher,accessory,o.audit,o.message,otherType,otherDescribe,Tname,Cname,Dname FROM Other o JOIN Teacher t ON o.Tsn = t.Tsn JOIN College c on c.Csn = t.Csn JOIN  Sdept s ON s.Dsn = t.Dsn
+        <where>
+            <if test="tname!=null and tname!='' and tname!='null'">
+                Tname = #{tname}
+            </if>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                AND Cname = #{cname}
+            </if>
+            <if test="dname!=null and dname!='' and dname!='null' and dname!='请选择所在专业'">
+                AND Dname = #{dname}
+            </if>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                AND otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                AND otherDate &lt;= #{endtime}
+            </if>
+            <if test="cname!=null">
+                AND o.audit = '0'
+            </if>
+            <if test="cname == null">
+                AND o.audit = '0'
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByMajorKey" resultType="Other">
+        select otherName,t.Tsn,otherDate,publisher,accessory,o.audit,o.message,otherType,otherDescribe,Tname FROM Other o JOIN Teacher t ON o.Tsn = t.Tsn WHERE otherName = #{otherName}
+    </select>
+
+    <!--更新数据，重新提交-->
+    <!--管理员修改数据-->
+    <update id="updateOne"  parameterType="com.slxy.terweb.model.Other">
+        UPDATE Other
+        SET otherDate = #{entity.otherDate},
+        otherType = #{entity.otherType},
+        publisher = #{entity.publisher},
+        otherDescribe = #{entity.otherDescribe},
+        audit = #{entity.audit}
+        WHERE otherName = #{entity.otherName};
+    </update>
+
+    <insert id="insertOne" parameterType="com.slxy.terweb.model.Other">
+        insert into Other (otherName,otherDate,otherType,publisher,otherDescribe,Tsn,audit)
+        VALUES (#{entity.otherName},
+        #{entity.otherDate},
+        #{entity.otherType},
+        #{entity.publisher},
+        #{entity.otherDescribe},
+        #{entity.tsn},
+        '0')
+    </insert>
+
+    <!--导出excel-->
+    <select id="selectExcel" resultType="ExcelOther" >
+        select otherName,t.tsn,Tname,otherType,otherDate,publisher,Cname,Dname,Tedubackground,JobTitle,otherDescribe FROM Other o JOIN Teacher t ON o.Tsn = t.Tsn JOIN College c on c.Csn = t.Csn JOIN  Sdept s ON s.Dsn = t.Dsn
+        <where>
+            <if test="tname!=null and tname!='' and tname!='null'">
+                Tname = #{tname}
+            </if>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                AND Cname = #{cname}
+            </if>
+            <if test="dname!=null and dname!='' and dname!='null' and dname!='请选择所在专业'">
+                AND Dname = #{dname}
+            </if>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                AND otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                AND otherDate &lt;= #{endtime}
+            </if>
+            <if test="cname!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="cname == null">
+                AND o.audit = '1'
+            </if>
+        </where>
+    </select>
+
+
+    <!--审核-->
+    <update id="pass">
+        UPDATE Other SET audit = '1' , message = #{message} WHERE otherName = #{majorkey}
+    </update>
+
+    <update id="nopass">
+        UPDATE Other SET audit = '2' , message = #{message} WHERE otherName = #{majorkey}
+    </update>
+
+    <!--保存附件路径-->
+    <update id="savePath">
+        update Other set accessory = #{path} WHERE otherName = #{majorkey}
+    </update>
+
+    <!--查询附件路径-->
+    <select id="getPath" resultType="String">
+        SELECT accessory FROM Other WHERE otherName = #{majorkey}
+    </select>
+
+    <!--查询各学院项目数目-->
+    <select id="getCollegeCount" resultType="java.util.HashMap">
+        select a.Cname as name,COUNT(b.Cname) as count from (select Cname from College) a left join
+        (select Cname from Other o join Teacher t on o.Tsn = t.Tsn join College c on t.Csn = c.Csn
+        <where>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                and otherDate &lt;= #{endtime}
+            </if>
+            <if test="starttime!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="starttime==null">
+                AND o.audit = '1'
+            </if>
+        </where>
+        )b on a.Cname = b.Cname group by a.Cname ORDER BY a.Cname
+    </select>
+
+    <!--查询各专业项目数目-->
+    <select id="getSdeptCount" resultType="java.util.HashMap">
+        select a.Dname as name,COUNT(b.Dname) as count from
+        (select Dname from Sdept s  join College c on c.Csn = s.Csn
+        <where>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                and Cname = #{cname}
+            </if>
+        </where>
+        ) as a  left join (select Dname from Other o join Teacher t on o.Tsn = t.Tsn
+        join College c on t.Csn = c.Csn join Sdept s on t.Dsn = s.Dsn
+        <where>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                and otherDate &lt;= #{endtime}
+            </if>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                and Cname = #{cname}
+            </if>
+            <if test="starttime!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="starttime==null">
+                AND o.audit = '1'
+            </if>
+        </where>
+        ) as b on a.Dname = b.Dname group by a.Dname ORDER BY a.Dname
+    </select>
+
+    <!--查询近年来的各学院项目数-->
+    <select id="getRecentYearsCount" resultType="java.util.HashMap">
+        select a.Cname as name,COUNT(b.Cname) as count from (select Cname from College) a left join
+        (select Cname from Other o JOIN Teacher t on o.Tsn = t.Tsn join College c on t.Csn = c.Csn
+        <where>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                and otherDate &lt;= #{endtime}
+            </if>
+            <if test="starttime!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="starttime==null">
+                AND o.audit = '1'
+            </if>
+        </where>
+        ) b on a.Cname = b.Cname group by a.Cname ORDER BY a.Cname
+    </select>
+
+    <!--查询近年来的各专业项目数-->
+    <select id="getRecentYearsSdeptCount" resultType="java.util.HashMap">
+        select a.Dname as name,COUNT(b.Dname) as count from
+        (select Dname from Sdept s  join College c on c.Csn = s.Csn
+        <where>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                and Cname = #{cname}
+            </if>
+        </where>
+        ) as a  left join (select Dname from Other o join Teacher t on o.Tsn = t.Tsn
+        join College c on t.Csn = c.Csn join Sdept s on t.Dsn = s.Dsn
+        <where>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                and otherDate &lt;= #{endtime}
+            </if>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                and Cname = #{cname}
+            </if>
+            <if test="cname!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="cname==null">
+                AND o.audit = '1'
+            </if>
+        </where>
+        ) as b on a.Dname = b.Dname group by a.Dname ORDER BY a.Dname
+    </select>
+
+    <!--导入excel-->
+    <insert id="importExcel" parameterType="java.util.List">
+        insert into Other
+        (otherName,tsn,otherType,otherDate,publisher,otherDescribe,audit
+        )values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.otherName,jdbcType=CHAR},#{item.tsn,jdbcType=CHAR},#{item.otherType,jdbcType=CHAR},#{item.otherDate,jdbcType=CHAR},#{item.publisher,jdbcType=CHAR}
+            ,#{item.otherDescribe,jdbcType=CHAR},'1'
+            )
+        </foreach>
+    </insert>
+
+    <!--按主键删除-->
+    <delete id="deleteByMajorkey">
+        DELETE FROM Other WHERE otherName = #{majorkey}
+    </delete>
+
+    <!--查询其他成果总数-->
+    <select id="selectCount" resultType="Integer">
+        SELECT count(*) FROM Other o join Teacher t ON o.Tsn =  t.Tsn join College c on t.Csn = c.Csn
+        <where>
+            <if test="cname!=null and cname!='' and cname!='null'">
+                c.Cname = #{cname}
+            </if>
+            <if test="starttime!=null and starttime!='' and starttime!='null'">
+                AND otherDate &gt;= #{starttime}
+            </if>
+            <if test="endtime!=null and endtime!='' and endtime!='null'">
+                AND otherDate &lt;= #{endtime}
+            </if>
+            <if test="cname!=null">
+                AND o.audit = '1'
+            </if>
+            <if test="cname==null">
+                AND o.audit = '1'
+            </if>
+        </where>
+    </select>
+</mapper>
